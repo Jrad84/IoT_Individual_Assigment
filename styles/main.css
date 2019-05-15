@@ -1,0 +1,58 @@
+html {
+  background:
+  url(../images/8717.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+* {
+  font-family: 'Open Sans Condensed', sans-serif;
+  text-align: center;
+}
+
+h1, h2, h3 {
+  color: #FFFFFF;
+}
+
+a {
+  color: grey;
+  font-size: 10px;
+}
+
+#title {
+  font-size: 30px;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#inputID {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#playerID {
+  background-color: transparent;
+  color: #FFFFFF;
+  font-size: 30px;
+  border-style: none;
+  border-bottom: 1px solid #FFFFFF;
+}
+
+#info {
+  position: absolute;
+  top: 70%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#footer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
