@@ -1,6 +1,6 @@
 html {
   background:
-  url(../images/8717.jpg) no-repeat center center fixed;
+  url(../images/ghibli.jpg) no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -12,13 +12,45 @@ html {
   text-align: center;
 }
 
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: block;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+h1 {
+  padding: 70px;
+}
+
 h1, h2, h3 {
-  color: #FFFFFF;
+  color: black;
 }
 
 a {
   color: grey;
   font-size: 10px;
+}
+
+#ardTemp {
+  float: left;
+  padding: 30px;
+}
+
+#fanStatus {
+  float: right;
+  padding: 30px;
 }
 
 #title {
