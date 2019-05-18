@@ -1,0 +1,90 @@
+html {
+  background:
+  url(../images/ghibli.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+* {
+  font-family: 'Open Sans Condensed', sans-serif;
+  text-align: center;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: block;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+h1 {
+  padding: 70px;
+}
+
+h1, h2, h3 {
+  color: black;
+}
+
+a {
+  color: grey;
+  font-size: 10px;
+}
+
+#ardTemp {
+  float: left;
+  padding: 30px;
+}
+
+#fanStatus {
+  float: right;
+  padding: 30px;
+}
+
+#title {
+  font-size: 30px;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#inputID {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#playerID {
+  background-color: transparent;
+  color: #FFFFFF;
+  font-size: 30px;
+  border-style: none;
+  border-bottom: 1px solid #FFFFFF;
+}
+
+#info {
+  position: absolute;
+  top: 70%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#footer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
