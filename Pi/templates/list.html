@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+      <table border = 1>
+         <thead>
+            <td>distance</td>
+            <td>date</td>
+         </thead>
+
+         {% for row in rows %}
+            <tr>
+               <td>{{row["distance"]}}</td>
+               <td>{{row["date"]}}</td>
+            </tr>
+         {% endfor %}
+      </table>
+
+      <a href = "/">home</a>
+{% endblock %}
