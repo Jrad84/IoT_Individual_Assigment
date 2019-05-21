@@ -12,7 +12,8 @@ import datetime
 
 
 app = Flask(__name__)
-device = "/dev/ttyUSB1"
+device = "COM7"
+#device = "/dev/ttyUSB1"
 # open the serial port to talk over
 s1 = serial.Serial(device, 9600)
 # clean the serial port
