@@ -12,10 +12,11 @@ import datetime
 
 
 app = Flask(__name__)
-device = "COM7"
-#device = "/dev/ttyUSB1"
+#device = "COM7"
+device = "/dev/ttyUSB1"
 # open the serial port to talk over
 s1 = serial.Serial(device, 9600)
+
 # clean the serial port
 s1.flushInput()
 
@@ -68,6 +69,16 @@ def index():
   #formTemp.tempTreshold.data = arduinoThreshold
   # return the webpage and pass it all of the information
   return render_template( 'index.html', title=title, arduinoDistance=arduinoDistance, arduinoLightStatus=arduinoLightStatus)
+
+@app.route('/list')
+def list():
+  conn = getDBConnection()
+  conn.row_factory = sql.Row
+  cur = conn.cursor()
+  cur.execute("select * from Incidents")
+  rows = cur.fetchall();
+  # return the webpage and pass it all of the information
+  return render_template( 'list.html', rows=rows )
 
 #data = s1.readline()
 #print(data)
