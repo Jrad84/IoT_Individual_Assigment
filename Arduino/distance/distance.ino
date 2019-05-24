@@ -10,6 +10,7 @@ void setup()
     pinMode(echo, INPUT);
     pinMode(led, OUTPUT);
     Serial.begin(9600);
+    threshold = 60.0;
 
 }
 
@@ -32,14 +33,14 @@ void loop()
   // Calculating the distance
   distance= duration*0.034/2;
   
-  // Prints the distance on the Serial Monitor
   
-  if (distance < 60.0)
+  if (distance <= threshold)
   {
     digitalWrite(led, HIGH);
     lightStatus = 1;
     Serial.println(distance);
-    //Serial.println(lightStatus);
+    Serial.println(lightStatus);
+    Serial.println(threshold);
   }
   delay(200);
 
