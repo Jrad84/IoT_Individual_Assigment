@@ -7,6 +7,8 @@ from flask import Flask, render_template, redirect, request
 import requests, json
 import serial
 import time
+#import pymysql
+#import pymysql.cursors
 import sqlite3 as sql
 import datetime
 
@@ -102,9 +104,11 @@ def list():
   # return the webpage and pass it all of the information
   return render_template( 'list.html', rows=rows )
 
+#data = s1.readline()
+#print(data)
+
 # # route used by Flask to show the main page
 if __name__ == '__main__':
-  app.run(debug=True)
-  app.run(host='0.0.0.0', port=8080)
+  app.run(debug=True, host='0.0.0.0')
 
 
