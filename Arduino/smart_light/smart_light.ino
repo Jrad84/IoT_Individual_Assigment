@@ -16,7 +16,7 @@ void loop() {
     distance = 13 * pow(volts, -1); 
   
 
-    //String msg = "distance:" + String(distance) + ", lightStatus:" + String(lightStatus) + ", threshold:" + String(threshold);
+    
     
 
     if (Serial.available() > 0)
@@ -38,9 +38,9 @@ void loop() {
     {
       digitalWrite(light, LOW);
     }
-
-    Serial.println(distance);
-    Serial.println(lightStatus);
-    Serial.println(threshold);
+    String msg = "distance:" + String(distance) + ", lightStatus:" + String(lightStatus) + ", threshold:" + String(threshold);
+    //Serial.println(distance);
+    //Serial.println(lightStatus);
+    //Serial.println(threshold);
 
 }
