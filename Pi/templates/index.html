@@ -13,18 +13,18 @@
       <h3>Light status <br> {{arduinoLightStatus}}</h3>
     </div>
 
-    <div class="wrapper">
+    <!--<div class="wrapper">
       <form action="/changeCity" method="post" novalidate id="cityWrap">
         <h2 > Distance Threshold <br> {{arduinoThreshold}} </h2>
         <p>...</p>
-      </form>
+      </form>-->
 
-     <!-- <h3>Temperature outside:</h3>
+      <h3>Change threshold:</h3>
 
       <form action="/changeDistanceThreshold" method="post" novalidate>
-        <h3> <br>...</h3>
-        <p>...</p>
-      </form> -->
+        <h3>{{ formDistance.distanceThreshold.label }} <br> {{formDistance.distanceThreshold(size=32) }} </h3>
+        <p>{{ formDistance.submit() }}</p>
+      </form> 
   </div>
 	
 
