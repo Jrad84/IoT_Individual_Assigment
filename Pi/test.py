@@ -1,6 +1,6 @@
 from flask import Flask, render_template, redirect, request
 from flask_wtf import FlaskForm
-#from wtforms import DecimalField, StringField, SubmitField, IntegerField, validators
+from wtforms import DecimalField, StringField, SubmitField, IntegerField, validators
 from wtforms.validators import DataRequired, Length
 import requests, json
 import serial
@@ -10,6 +10,8 @@ import datetime
 
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'a-good-password'
+
 deviceA = "/dev/ttyUSB0"
 #deviceB = "/dev/ttyUSB1"
 # open the serial port to talk over
@@ -30,7 +32,7 @@ class Arduino:
   def __init__(self):
     self.distance = None
     self.lightStatus = None
-    self.threshold = 60.0
+    self.threshold = None
     
   def write(self,value):
       value = str( value )
@@ -72,7 +74,7 @@ class Arduino:
 
 # class for the form to change distance threshold
 class DistanceForm(FlaskForm):
-  distanceTreshold = DecimalField('Distance Threshold', validators=[DataRequired()])
+  distanceThreshold = DecimalField('Distance Threshold', validators=[DataRequired()])
   submit = SubmitField('Submit')
 
     
@@ -90,15 +92,15 @@ def index():
   # collect all information to show to user
   title = 'Smart Light Controller'
   arduinoDistance, arduinoLightStatus, arduinoThreshold = ard.read()
-  #conn = getDBConnection()
-  #conn.row_factory = sql.Row
-  #cur = conn.cursor()
-  #cur.execute("select * from Incidents")
-  #rows = cur.fetchall();
+  conn = getDBConnection()
+  conn.row_factory = sql.Row
+  cur = conn.cursor()
+  cur.execute("select * from Incidents ASC, LIMIT 5")
+  rows = cur.fetchall();
   formDistance = DistanceForm()
-  formDistance.distanceTreshold.data = arduinoThreshold
+  formDistance.distanceThreshold.data = arduinoThreshold
   # return the webpage and pass it all of the information
-  return render_template( 'index.html', title=title, arduinoDistance=arduinoDistance, arduinoLightStatus=arduinoLightStatus, formDistance=formDistance)
+  return render_template( 'index.html', rows=rows, title=title, arduinoDistance=arduinoDistance, arduinoLightStatus=arduinoLightStatus, formDistance=formDistance)
 
 # route used when button to submit temp threshold is clicked, the user never sees this
 @app.route('/changeDistanceThreshold', methods=['GET', 'POST'])
@@ -107,15 +109,15 @@ def changeDistanceThreshold():
   # form submited
   if request.method == 'POST':
       # grab data from form
-    distanceTreshold = request.form['distanceTreshold']
+    distanceThreshold = request.form['distanceThreshold']
     try:
       # try and change value
       # probably don't need the try catch for our needs here
       # but goot to make sure value ented into form is an int
-      ard.write( distanceTreshold )
+      ard.write(distanceThreshold)
     except:
       pass
-  # return the user to the main page
+      # return the user to the main page
     return redirect('/')
 
 @app.route('/list')

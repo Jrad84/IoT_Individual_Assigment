@@ -41,7 +41,6 @@ void loop()
   duration = pulseIn(echo, HIGH);
   
   // Calculating the distance
-
   distance = (duration / 2) * 0.0343;
  
   if (distance <= threshold)
@@ -50,9 +49,6 @@ void loop()
     lightStatus = true;
   }
    
-   //Serial.println(distance);
-   //Serial.println(lightStatus);
-   //Serial.println(threshold);
    String msg = "distance:" + String(distance) + ", lightStatus:" + String(lightStatus) + ", threshold:" + String(threshold);
    Serial.println(msg);
    
