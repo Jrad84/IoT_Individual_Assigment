@@ -3,8 +3,10 @@
 #define echo 9
 
 int led = 13;
-float duration, distance, threshold;
-bool lightStatus = 0;
+float duration;
+float distance;
+float threshold;
+bool lightStatus;
 
 void setup() 
 {
@@ -12,10 +14,18 @@ void setup()
     pinMode(trigger, OUTPUT);
     pinMode(echo, INPUT);
     pinMode(led, OUTPUT);
+    lightStatus = false;
+    threshold = 60.0;
 }
 
 void loop() 
 {
+  if (Serial.available() > 0)
+  {
+    String data = Serial.readString();
+    threshold = data.toFloat();
+  }
+  
     // Clears the trigPin
   digitalWrite(trigger, LOW);
   delayMicroseconds(2);
@@ -37,12 +47,14 @@ void loop()
   if (distance < 60.0)
   {
     digitalWrite(led, HIGH);
-    lightStatus = 1;
+    lightStatus = true;
   }
    
-   Serial.println(distance);
-   Serial.println(lightStatus);
-   Serial.println(threshold);
+   //Serial.println(distance);
+   //Serial.println(lightStatus);
+   //Serial.println(threshold);
+   String msg = "distance:" + String(distance) + ", lightStatus:" + String(lightStatus) + ", threshold:" + String(threshold);
+   Serial.println(msg);
    
    delay(500);
 
