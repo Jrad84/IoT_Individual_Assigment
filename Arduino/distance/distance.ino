@@ -16,7 +16,7 @@ void setup()
     pinMode(led, OUTPUT);
     lightStatus = false;
     threshold = 60.0;
-}
+
 
 void loop() 
 {
@@ -41,10 +41,10 @@ void loop()
   duration = pulseIn(echo, HIGH);
   
   // Calculating the distance
+
   distance = (duration / 2) * 0.0343;
  
-  
-  if (distance < 60.0)
+  if (distance <= threshold)
   {
     digitalWrite(led, HIGH);
     lightStatus = true;
