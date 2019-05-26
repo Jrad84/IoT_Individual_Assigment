@@ -15,8 +15,7 @@ void setup()
     pinMode(echo, INPUT);
     pinMode(led, OUTPUT);
     lightStatus = false;
-    threshold = 60.0;
-
+}
 
 void loop() 
 {
@@ -43,10 +42,15 @@ void loop()
   // Calculating the distance
   distance = (duration / 2) * 0.0343;
  
-  if (distance <= threshold)
+  if (threshold < distance)
   {
     digitalWrite(led, HIGH);
     lightStatus = true;
+  }
+  else
+  {
+    digitalWrite(led, LOW);
+    lightStatus = false;
   }
    
    String msg = "distance:" + String(distance) + ", lightStatus:" + String(lightStatus) + ", threshold:" + String(threshold);

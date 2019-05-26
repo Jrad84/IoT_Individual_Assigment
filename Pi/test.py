@@ -4,6 +4,8 @@ from wtforms import DecimalField, StringField, SubmitField, IntegerField, valida
 from wtforms.validators import DataRequired, Length
 import requests, json
 import serial
+from pushbullet import Pushbullet
+import os
 import time
 import sqlite3 as sql
 import datetime
@@ -12,6 +14,14 @@ import datetime
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'a-good-password'
 
+# set up push bullet with API key
+api_key = "o.TTnGHTsfO2tV7jPh6SaQyWV8UBBCX1PP"
+pb = Pushbullet(api_key)
+
+#device to send notifications to
+oppo = pb.devices[0]
+
+# Arduino 
 deviceA = "/dev/ttyUSB0"
 #deviceB = "/dev/ttyUSB1"
 # open the serial port to talk over
@@ -32,7 +42,7 @@ class Arduino:
   def __init__(self):
     self.distance = None
     self.lightStatus = None
-    self.threshold = None
+    self.threshold = 60
     
   def write(self,value):
       value = str( value )
@@ -80,7 +90,9 @@ class DistanceForm(FlaskForm):
 class QueryForm(FlaskForm):
     numResults = DecimalField('Number of Incidents', validators=[DataRequired()])
     submit = SubmitField('Submit')
+  
     
+
 ard = Arduino()
 
 # route used by Flask to show the main page
@@ -90,6 +102,11 @@ def index():
   # collect all information to show to user
   title = 'Smart Light Controller'
   arduinoDistance, arduinoLightStatus, arduinoThreshold = ard.read()
+  if arduinoLightStatus == True:
+      #os.system('/home/pi/Documents/IoT_Individual_Assignment/pushbullet.sh "Alert! Light triggered"')
+      with open("../images/1.png", "rb") as pic:
+          file_data = pb.upload_file(pic, "security_cam.png")
+      push = pb.push_file(**file_data)
   formDistance = DistanceForm()
   formDistance.distanceThreshold.data = arduinoThreshold
   # return the webpage and pass it all of the information
@@ -107,7 +124,7 @@ def changeDistanceThreshold():
       # try and change value
       # probably don't need the try catch for our needs here
       # but goot to make sure value ented into form is an int
-      ard.write(distanceThreshold)
+      ard.write( distanceThreshold )
     except:
       pass
       # return the user to the main page
