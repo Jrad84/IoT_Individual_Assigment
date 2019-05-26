@@ -77,13 +77,11 @@ class DistanceForm(FlaskForm):
   distanceThreshold = DecimalField('Distance Threshold', validators=[DataRequired()])
   submit = SubmitField('Submit')
 
+class QueryForm(FlaskForm):
+    numResults = DecimalField('Number of Incidents', validators=[DataRequired()])
+    submit = SubmitField('Submit')
     
 ard = Arduino()
-#data = ard.read()
-#print(data)
-
-
-
 
 # route used by Flask to show the main page
 @app.route('/', methods=['GET', 'POST'])
@@ -92,15 +90,10 @@ def index():
   # collect all information to show to user
   title = 'Smart Light Controller'
   arduinoDistance, arduinoLightStatus, arduinoThreshold = ard.read()
-  conn = getDBConnection()
-  conn.row_factory = sql.Row
-  cur = conn.cursor()
-  cur.execute("select * from Incidents ASC, LIMIT 5")
-  rows = cur.fetchall();
   formDistance = DistanceForm()
   formDistance.distanceThreshold.data = arduinoThreshold
   # return the webpage and pass it all of the information
-  return render_template( 'index.html', rows=rows, title=title, arduinoDistance=arduinoDistance, arduinoLightStatus=arduinoLightStatus, formDistance=formDistance)
+  return render_template( 'index.html',title=title, arduinoDistance=arduinoDistance, arduinoLightStatus=arduinoLightStatus, formDistance=formDistance)
 
 # route used when button to submit temp threshold is clicked, the user never sees this
 @app.route('/changeDistanceThreshold', methods=['GET', 'POST'])
@@ -120,18 +113,19 @@ def changeDistanceThreshold():
       # return the user to the main page
     return redirect('/')
 
-@app.route('/list')
+@app.route('/list', methods = ['GET', 'POST'])
 def list():
   conn = getDBConnection()
   conn.row_factory = sql.Row
   cur = conn.cursor()
-  cur.execute("select * from Incidents")
+  formQuery = QueryForm()
+  #formQuery.
+  if request.method == 'POST':
+      results = request.form['numResults']
+      cur.execute("select * from Incidents LIMIT (?)", (results,))
   rows = cur.fetchall();
   # return the webpage and pass it all of the information
-  return render_template( 'list.html', rows=rows )
-
-#data = s1.readline()
-#print(data)
+  return render_template( 'list.html', rows=rows, formQuery=formQuery )
 
 # # route used by Flask to show the main page
 if __name__ == '__main__':

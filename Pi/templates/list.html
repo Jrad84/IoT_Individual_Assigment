@@ -14,6 +14,11 @@
             </tr>
          {% endfor %}
       </table>
-
-      <a href = "/">home</a>
+      <div class="wrapper">
+	<form action ="/list" method="post" novalidate>
+	<h2>{{ formQuery.numResults.label }} <br> {{ formQuery.numResults }}</h2>
+	<p> {{ formQuery.submit() }} </p>
+      </div> 	
+	
+      
 {% endblock %}
