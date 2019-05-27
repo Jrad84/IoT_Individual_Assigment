@@ -5,12 +5,14 @@
          <thead>
             <td>distance</td>
             <td>date</td>
+	    <td>image</td>	
          </thead>
 
          {% for row in rows %}
             <tr>
                <td>{{row["distance"]}}</td>
                <td>{{row["date"]}}</td>
+	       <td><a href="/image">view</a></td>	
             </tr>
          {% endfor %}
       </table>

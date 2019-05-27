@@ -11,7 +11,7 @@ import sqlite3 as sql
 import datetime
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = 'a-good-password'
 
 # set up push bullet with API key
@@ -104,8 +104,8 @@ def index():
   arduinoDistance, arduinoLightStatus, arduinoThreshold = ard.read()
   if arduinoLightStatus == True:
       #os.system('/home/pi/Documents/IoT_Individual_Assignment/pushbullet.sh "Alert! Light triggered"')
-      with open("../images/1.png", "rb") as pic:
-          file_data = pb.upload_file(pic, "security_cam.png")
+      with open("static/images/1.png", "rb") as pic:
+          file_data = pb.upload_file(pic, "1.png")
       push = pb.push_file(**file_data)
   formDistance = DistanceForm()
   formDistance.distanceThreshold.data = arduinoThreshold
@@ -130,6 +130,10 @@ def changeDistanceThreshold():
       # return the user to the main page
     return redirect('/')
 
+@app.route('/image')
+def image():
+    return render_template('image.html')
+
 @app.route('/list', methods = ['GET', 'POST'])
 def list():
   conn = getDBConnection()
@@ -139,7 +143,7 @@ def list():
   #formQuery.
   if request.method == 'POST':
       results = request.form['numResults']
-      cur.execute("select * from Incidents LIMIT (?)", (results,))
+      cur.execute("select * from Incidents ORDER BY date DESC LIMIT (?)", (results,))
   rows = cur.fetchall();
   # return the webpage and pass it all of the information
   return render_template( 'list.html', rows=rows, formQuery=formQuery )
