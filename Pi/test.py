@@ -4,14 +4,15 @@ from wtforms import DecimalField, StringField, SubmitField, IntegerField, valida
 from wtforms.validators import DataRequired, Length
 import requests, json
 import serial
-from pushbullet import Pushbullet
 import os
+from pushbullet import Pushbullet
 import time
+import face_recognition
 import sqlite3 as sql
 import datetime
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 app.config['SECRET_KEY'] = 'a-good-password'
 
 # set up push bullet with API key
@@ -30,6 +31,24 @@ s1 = serial.Serial(deviceA, 9600)
 
 # clean the serial port
 s1.flushInput()
+
+def faceMatch():
+    # list of approved people
+    images = os.listdir("./face_recognition/known")
+    # image to be checked
+    unknown = face_recognition.load_image_file("./face_recognition/unknown/download.jpeg")
+    # add image to feature vector
+    unknown_encoding = face_recognition.face_encodings(unknown)[0]
+    # iterate over each image
+    for image in images:
+        # load the image
+        current_image = face_recognition.load_image_file("./face_recognition/known/" + image)
+        # encode the loaded image into a feature vector
+        current_image_encoded = face_recognition.face_encodings(current_image)[0]
+        # check for match
+        result = face_recognition.compare_faces([unknown_encoding],current_image_encoded)
+    return result
+    
 
 def getDBConnection():
     #conn = sql.connect('database.db')
@@ -77,14 +96,14 @@ class Arduino:
     conn = getDBConnection()
     cur = conn.cursor()
     #if (self.distance < 60.0):
-    cur.execute("INSERT INTO INCIDENTS (distance,date) VALUES (?,?)", (self.distance,datetime.datetime.now()))
+    cur.execute("INSERT INTO INCIDENTS (distance,date) VALUES (?,?)", (self.distance, datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")))
     conn.commit()
     conn.close()
     return self.distance, self.lightStatus, self.threshold
 
 # class for the form to change distance threshold
 class DistanceForm(FlaskForm):
-  distanceThreshold = DecimalField('Distance Threshold', validators=[DataRequired()])
+  distanceThreshold = DecimalField('Change Threshold', validators=[DataRequired()])
   submit = SubmitField('Submit')
 
 class QueryForm(FlaskForm):
@@ -103,14 +122,17 @@ def index():
   title = 'Smart Light Controller'
   arduinoDistance, arduinoLightStatus, arduinoThreshold = ard.read()
   if arduinoLightStatus == True:
-      #os.system('/home/pi/Documents/IoT_Individual_Assignment/pushbullet.sh "Alert! Light triggered"')
-      with open("../images/1.png", "rb") as pic:
-          file_data = pb.upload_file(pic, "security_cam.png")
-      push = pb.push_file(**file_data)
+      with open("./static/images/download.jpg", "rb") as pic:
+          file_data = pb.upload_file(pic, "security_cam.jpg")
+          image = faceMatch()
+          print(image)
+          if (image):
+              alert = pb.push_note("Alert!", "Unauthorized person")
+              push = pb.push_file(**file_data)
   formDistance = DistanceForm()
   formDistance.distanceThreshold.data = arduinoThreshold
   # return the webpage and pass it all of the information
-  return render_template( 'index.html',title=title, arduinoDistance=arduinoDistance, arduinoLightStatus=arduinoLightStatus, formDistance=formDistance)
+  return render_template( 'index.html',title=title, arduinoDistance=arduinoDistance, arduinoLightStatus=arduinoLightStatus, arduinoThreshold=arduinoThreshold, formDistance=formDistance)
 
 # route used when button to submit temp threshold is clicked, the user never sees this
 @app.route('/changeDistanceThreshold', methods=['GET', 'POST'])
@@ -130,6 +152,14 @@ def changeDistanceThreshold():
       # return the user to the main page
     return redirect('/')
 
+@app.route('/image')
+def image():
+    return render_template('image.html')
+
+@app.route('/image1')
+def image1():
+    return render_template('image1.html')
+
 @app.route('/list', methods = ['GET', 'POST'])
 def list():
   conn = getDBConnection()
@@ -139,7 +169,7 @@ def list():
   #formQuery.
   if request.method == 'POST':
       results = request.form['numResults']
-      cur.execute("select * from Incidents LIMIT (?)", (results,))
+      cur.execute("select * from Incidents ORDER BY date DESC LIMIT (?)", (results,))
   rows = cur.fetchall();
   # return the webpage and pass it all of the information
   return render_template( 'list.html', rows=rows, formQuery=formQuery )
