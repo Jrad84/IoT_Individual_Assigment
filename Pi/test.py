@@ -96,7 +96,7 @@ class Arduino:
     conn = getDBConnection()
     cur = conn.cursor()
     #if (self.distance < 60.0):
-    cur.execute("INSERT INTO INCIDENTS (distance,date) VALUES (?,?)", (self.distance,datetime.datetime.now()))
+    cur.execute("INSERT INTO INCIDENTS (distance,date) VALUES (?,?)", (self.distance, datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")))
     conn.commit()
     conn.close()
     return self.distance, self.lightStatus, self.threshold
