@@ -42,7 +42,7 @@ void loop()
   // Calculating the distance
   distance = (duration / 2) * 0.0343;
  
-  if (threshold < distance)
+  if (distance < threshold)
   {
     digitalWrite(led, HIGH);
     lightStatus = true;
