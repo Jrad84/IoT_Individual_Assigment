@@ -95,10 +95,10 @@ class Arduino:
     #return self.distance, self.lightStatus, self.threshold
     conn = getDBConnection()
     cur = conn.cursor()
-    #if (self.distance < 60.0):
-    cur.execute("INSERT INTO INCIDENTS (distance,date) VALUES (?,?)", (self.distance, datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")))
-    conn.commit()
-    conn.close()
+    if (self.distance < self.threshold):
+        cur.execute("INSERT INTO INCIDENTS (distance,date) VALUES (?,?)", (self.distance, datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")))
+        conn.commit()
+        conn.close()
     return self.distance, self.lightStatus, self.threshold
 
 # class for the form to change distance threshold
@@ -155,10 +155,6 @@ def changeDistanceThreshold():
 @app.route('/image')
 def image():
     return render_template('image.html')
-
-@app.route('/image1')
-def image1():
-    return render_template('image1.html')
 
 @app.route('/list', methods = ['GET', 'POST'])
 def list():
